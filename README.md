@@ -7,6 +7,7 @@ Folder Directory:
 * machineLearning contains HPC code and ML related programs
 * requiredFunctions is used for data calculations
 * tools contain programs used to perform ancillary tasks
+* visualizations contains programs to visualize leanred features, etc
 
 Requires the following MATLAB toolboxes:
 * Simulink                                              Version 10.5        (R2022a)
