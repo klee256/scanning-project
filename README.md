@@ -21,3 +21,6 @@ Requires the following MATLAB toolboxes:
 * Reinforcement Learning Toolbox                        Version 2.2         (R2022a)
 * Signal Processing Toolbox                             Version 9.0         (R2022a)
 * Statistics and Machine Learning Toolbox               Version 12.3        (R2022a)
+
+Notes:
+* High minibatch values won't work on the training dataset, best to update with one sample at a time 
