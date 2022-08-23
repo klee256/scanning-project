@@ -4,7 +4,9 @@ This is the repo for the scanning project.
 
 Folder Directory:
 * data contains measured parameters
-* requiredFunctions is used for calculations
+* machineLearning contains HPC code and ML related programs
+* requiredFunctions is used for data calculations
+* tools contain programs used to perform ancillary tasks
 
 Requires the following MATLAB toolboxes:
 * Simulink                                              Version 10.5        (R2022a)
