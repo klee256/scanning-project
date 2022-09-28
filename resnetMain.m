@@ -4,12 +4,13 @@ close all
 
 tic
 
-hpc="0";
+hpc="1";
 
 %% HPC Config
 if hpc == "1"
     pc=parcluster('local');
-    parpool(pc,48) % max is 48 on the cluster, verified by admin
+    parpool(pc,4)
+    %parpool(pc,48) % max is 48 on the cluster, verified by admin
 end
 
 %% Data Selector (change value of "selector" to desired material paramter)
@@ -19,10 +20,11 @@ end
 % 4 - pl
 % 5 - mu
 
-selector=1;
+selector=5;
 padding='n'; % must be either 'y' or 'n' NOT "Y" or "y"
-trainName="N57_7";
-validName="N17_6";
+trainName="P61_10";
+validName="P61_11";
+neighborhoodSize=2;
 
 % Device Names:
 % "N57_7"
@@ -70,13 +72,13 @@ if hpc == "1"
     vMat=importdata(dir(validName+matstr).name);
 end
 %
-[trainingJV,trainingMat]=neighborhood(tJV,tMat,2,padding);
-[validationJV,validationMat]=neighborhood(vJV,vMat,2,padding,tJV);
+[trainingJV,trainingMat]=neighborhood(tJV,tMat,neighborhoodSize,padding);
+[validationJV,validationMat]=neighborhood(vJV,vMat,neighborhoodSize,padding,tJV,tMat);
 
 % Unit Testing
-smallUnit=1:2;
-trainingJV=trainingJV(:,smallUnit); trainingMat=trainingMat(smallUnit);
-validationJV=validationJV(:,smallUnit); validationMat=validationMat(smallUnit);
+% smallUnit=1:2;
+% trainingJV=trainingJV(:,smallUnit); trainingMat=trainingMat(smallUnit);
+% validationJV=validationJV(:,smallUnit); validationMat=validationMat(smallUnit);
 
 %% Training 
 
@@ -90,8 +92,8 @@ validationJV=validationJV(:,smallUnit); validationMat=validationMat(smallUnit);
 
 % Single
 lr=1.0e-4;
-[trainingLoss,validationLoss,encoderNets] = resnetFunct(lr,2,trainingJV,trainingMat,validationJV,validationMat);
-
+%[trainingLoss,validationLoss,encoderNets] = resnetFunct(lr,2,trainingJV,trainingMat,validationJV,validationMat);
+[trainingLoss,validationLoss,encoderNets] = smallNetFunct(lr,200,trainingJV,trainingMat,validationJV,validationMat);
 toc
 
 % figure(); plot(trainingLoss); hold on; plot(validationLoss); legend('train','validation')
