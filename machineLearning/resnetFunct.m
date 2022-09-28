@@ -151,7 +151,7 @@ for epoch = 1:numEpochs
 end
 
 save('trainingLoss.mat','trainingLoss')
-save('encoder.mat','encoderNet')
+save('allEncoders.mat','holdEncoders')
 
 if nargin > 4
     save('validationLoss.mat','validationLoss')
