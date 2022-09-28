@@ -3,7 +3,7 @@
 % Distance away from points is n
 % Also grabs the related material parameters
 
-function [trainJVArray,trainMatArray] = neighborhood(jvData,materialArray,n,padding,scale,varargin)
+function [trainJVArray,trainMatArray] = neighborhood(jvData,materialArray,n,padding,scaleJV,scaleMat,varargin)
 
 dim=sqrt(size(jvData,2)/2);
 
@@ -15,14 +15,16 @@ if nargin==4
     current=jvData(:,2:2:end); current=current*(-1.0); current=rescale(current);
 end 
 
-if nargin==5
+if nargin==6
     % The scaling for the neighborhood needs to be proportional to the original data
-    % If the number of input arguments equals 5, the program assumes you
+    % If the number of input arguments equals 6, the program assumes you
     % want to scale the range (to the original data)
     % The variable "scale" should be the original clean JV training data
    
-    trainingVoltage=scale(:,1:2:end); mmV=minmax(trainingVoltage);
-    trainingCurrent=scale(:,2:2:end); trainingCurrent=trainingCurrent*(-1.0); mmJ=minmax(trainingCurrent);
+    trainingVoltage=scaleJV(:,1:2:end); maxV=max(trainingVoltage,[],'all');
+    trainingCurrent=scaleJV(:,2:2:end); trainingCurrent=trainingCurrent*(-1.0); 
+    minJ=min(trainingCurrent,[],'all');
+    maxJ=max(trainingCurrent,[],'all');
 
     voltage=jvData(:,1:2:end);
     current=jvData(:,2:2:end); current=current*(-1.0);
@@ -31,8 +33,8 @@ if nargin==5
     % range [a,b], input x, output y
     % y = a + [(x-min(x))/(max(x)-min(x))]*(b-a)
 
-    voltage=voltage./mmV(2);
-    current=(current-mmJ(1))./(mmJ(2)-mmJ(1));
+    voltage=voltage./maxV;
+    current=(current-minJ)./(maxJ-minJ);
 end 
 
 jvArray=cell(1,size(voltage,2));
@@ -40,12 +42,29 @@ for jj=1:length(jvArray)
     jvArray{jj}=cat(2,voltage(:,jj),current(:,jj));
 end
 
+if nargin==6
+    minScaleMat=min(scaleMat);
+    if length(minScaleMat)>1
+        disp('Error')
+    end
+    
+    maxScaleMat=max(scaleMat);
+    if length(maxScaleMat)>1
+        disp('Error')
+    end
+end
+
 if padding == 'n'
     fullJVMatrix=reshape(jvArray,dim,dim);
     startingPos=n+1;
     endingPos=dim-n;
     trainMatArray=windowPlot(materialArray,startingPos,endingPos);
-    trainMatArray=rescale(trainMatArray);
+    if nargin==4
+        trainMatArray=rescale(trainMatArray);
+    end
+    if nargin==6
+        trainMatArray=(trainMatArray-minScaleMat)./(maxScaleMat-minScaleMat);
+    end
 end
 
 if padding == 'y'   
@@ -57,7 +76,12 @@ if padding == 'y'
     fullJVMatrix=baseMatrix;
     endingPos=dim+n;
     trainMatArray=materialArray;
-    trainMatArray=rescale(trainMatArray);
+    if nargin==4
+        trainMatArray=rescale(trainMatArray);
+    end
+    if nargin==6
+        trainMatArray=(trainMatArray-minScaleMat)./(maxScaleMat-minScaleMat);
+    end
 end
 
 spacing=[(-1.0)*n,0,n];
