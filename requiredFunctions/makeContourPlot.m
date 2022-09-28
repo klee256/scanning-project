@@ -1,6 +1,14 @@
-function makeContourPlot(dataArray,userYlabel,userTitle,step,flip)
+function makeContourPlot(dataArray,userYlabel,userTitle,step,flip,varargin)
 
     % flip refers to flipping the color map
+
+    if nargin==1
+        userYlabel='';
+        userTitle='';
+        step=0.025;
+        flip='n';
+        dataArray=varargin{1,1};
+    end
 
     dim=sqrt(length(dataArray));
     dataMat=reshape(dataArray,dim,dim);

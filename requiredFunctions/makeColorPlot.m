@@ -1,5 +1,13 @@
-function makeColorPlot(dataArray,userYlabel,userTitle,step,flip)
+function makeColorPlot(dataArray,userYlabel,userTitle,step,flip,varargin)
 
+    if nargin==1
+        userYlabel='';
+        userTitle='';
+        step=0.025;
+        flip='n';
+        dataArray=varargin{1,1};
+    end
+    
     % flip refers to flipping the color map
 
     dim=sqrt(length(dataArray));
